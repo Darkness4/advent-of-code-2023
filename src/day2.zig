@@ -3,7 +3,7 @@ const std = @import("std");
 var input = @embedFile("day2.txt");
 
 fn day2() !i64 {
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.splitSequence(u8, input, "\n");
 
     var acc: i64 = 0;
 
@@ -13,9 +13,9 @@ fn day2() !i64 {
         }
         // Parse Game ID
         var id: i64 = 0;
-        var it = std.mem.split(u8, line, ": ");
+        var it = std.mem.splitSequence(u8, line, ": ");
         if (it.next()) |x| {
-            var gameit = std.mem.split(u8, x, " ");
+            var gameit = std.mem.splitSequence(u8, x, " ");
             _ = gameit.next(); // "Game: "
             if (gameit.next()) |idstr| {
                 id = try std.fmt.parseInt(i64, idstr, 10);
@@ -26,9 +26,9 @@ fn day2() !i64 {
         const max_green = 13;
         const max_blue = 14;
         if (it.next()) |game| {
-            var roundit = std.mem.split(u8, game, "; ");
+            var roundit = std.mem.splitSequence(u8, game, "; ");
             while (roundit.next()) |round| {
-                var handit = std.mem.split(u8, round, ", ");
+                var handit = std.mem.splitSequence(u8, round, ", ");
                 var red: i64 = 0;
                 var green: i64 = 0;
                 var blue: i64 = 0;
@@ -36,7 +36,7 @@ fn day2() !i64 {
                 // Parse "x green, y blue, z red"
                 while (handit.next()) |hand| {
                     var n: i64 = 0;
-                    var v = std.mem.split(u8, hand, " ");
+                    var v = std.mem.splitSequence(u8, hand, " ");
                     if (v.next()) |nstr| {
                         n = try std.fmt.parseInt(i64, nstr, 10);
                     }
@@ -66,7 +66,7 @@ fn day2() !i64 {
 }
 
 fn day2p2() !i64 {
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.splitSequence(u8, input, "\n");
 
     var acc: i64 = 0;
 
@@ -76,9 +76,9 @@ fn day2p2() !i64 {
         }
         // Parse Game ID
         var id: i64 = 0;
-        var it = std.mem.split(u8, line, ": ");
+        var it = std.mem.splitSequence(u8, line, ": ");
         if (it.next()) |x| {
-            var gameit = std.mem.split(u8, x, " ");
+            var gameit = std.mem.splitSequence(u8, x, " ");
             _ = gameit.next(); // "Game: "
             if (gameit.next()) |idstr| {
                 id = try std.fmt.parseInt(i64, idstr, 10);
@@ -89,14 +89,14 @@ fn day2p2() !i64 {
         var req_green: i64 = 0;
         var req_blue: i64 = 0;
         if (it.next()) |game| {
-            var roundit = std.mem.split(u8, game, "; ");
+            var roundit = std.mem.splitSequence(u8, game, "; ");
             while (roundit.next()) |round| {
-                var handit = std.mem.split(u8, round, ", ");
+                var handit = std.mem.splitSequence(u8, round, ", ");
 
                 // Parse "x green, y blue, z red"
                 while (handit.next()) |hand| {
                     var n: i64 = 0;
-                    var v = std.mem.split(u8, hand, " ");
+                    var v = std.mem.splitSequence(u8, hand, " ");
                     if (v.next()) |nstr| {
                         n = try std.fmt.parseInt(i64, nstr, 10);
                     }

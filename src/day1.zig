@@ -22,7 +22,7 @@ fn findLastDigit(data: []const u8) u8 {
 }
 
 fn day1() !i64 {
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.splitSequence(u8, input, "\n");
 
     var acc: i64 = 0;
 
@@ -117,7 +117,7 @@ fn findLastWordDigit(data: []const u8) u8 {
 }
 
 fn day1p2() !i64 {
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.splitSequence(u8, input, "\n");
 
     var acc: i64 = 0;
     var idx: i64 = 0;
