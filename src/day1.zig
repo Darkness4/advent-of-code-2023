@@ -131,8 +131,11 @@ fn day1p2() !i64 {
 }
 
 pub fn main() !void {
+    var timer = try std.time.Timer.start();
     var result = try day1();
-    std.debug.print("{}\n", .{result});
+    const p1_time = timer.lap();
+    std.debug.print("{} in {}ns\n", .{ result, p1_time });
     result = try day1p2();
-    std.debug.print("{}\n", .{result});
+    const p2_time = timer.read();
+    std.debug.print("{} in {}ns\n", .{ result, p2_time });
 }

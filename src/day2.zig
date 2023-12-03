@@ -128,8 +128,11 @@ fn day2p2() !i64 {
 }
 
 pub fn main() !void {
+    var timer = try std.time.Timer.start();
     var result = try day2();
-    std.debug.print("{}\n", .{result});
+    const p1_time = timer.lap();
+    std.debug.print("{} in {}ns\n", .{ result, p1_time });
     result = try day2p2();
-    std.debug.print("{}\n", .{result});
+    const p2_time = timer.read();
+    std.debug.print("{} in {}ns\n", .{ result, p2_time });
 }
