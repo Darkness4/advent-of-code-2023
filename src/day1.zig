@@ -31,8 +31,7 @@ fn day1() !i64 {
             continue;
         }
 
-        const n = findFirstDigit(line) * 10 + findLastDigit(line);
-        acc += n;
+        acc += findFirstDigit(line) * 10 + findLastDigit(line);
     }
 
     return acc;
@@ -86,7 +85,6 @@ fn wordToInt(data: []const u8, index: usize, ch: u8) u8 {
     return 0;
 }
 
-// P2
 fn findFirstWordDigit(data: []const u8) u8 {
     for (0.., data) |i, char| {
         // Is Int
@@ -126,21 +124,11 @@ fn day1p2() !i64 {
         if (line.len == 0) {
             continue;
         }
-        const n = findFirstWordDigit(line) * 10 + findLastWordDigit(line);
-        if (idx == 0) {
-            std.debug.assert(n == 28);
-        } else if (idx == 1) {
-            std.debug.assert(n == 85);
-        } else if (idx == 2) {
-            std.debug.assert(n == 18);
-        }
-        acc += n;
+        acc += findFirstWordDigit(line) * 10 + findLastWordDigit(line);
     }
 
     return acc;
 }
-
-const expect = std.testing.expect;
 
 pub fn main() !void {
     var result = try day1();
