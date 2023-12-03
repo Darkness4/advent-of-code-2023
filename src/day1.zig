@@ -4,7 +4,7 @@ var input = @embedFile("day1.txt");
 
 fn findFirstDigit(data: []const u8) u8 {
     for (data) |char| {
-        if (char >= '0' and char < '9') {
+        if (char >= '0' and char <= '9') {
             return char - '0';
         }
     }
@@ -14,7 +14,7 @@ fn findFirstDigit(data: []const u8) u8 {
 fn findLastDigit(data: []const u8) u8 {
     var ch: u8 = 0;
     for (data) |char| {
-        if (char >= '0' and char < '9') {
+        if (char >= '0' and char <= '9') {
             ch = char - '0';
         }
     }
@@ -90,7 +90,7 @@ fn wordToInt(data: []const u8, index: usize, ch: u8) u8 {
 fn findFirstWordDigit(data: []const u8) u8 {
     for (0.., data) |i, char| {
         // Is Int
-        if (char < '9' and char >= '0') {
+        if (char <= '9' and char >= '0') {
             return char - '0';
         }
 
@@ -105,7 +105,7 @@ fn findFirstWordDigit(data: []const u8) u8 {
 fn findLastWordDigit(data: []const u8) u8 {
     var ch: u8 = 0;
     for (0.., data) |i, char| {
-        if (char < '9' and char >= '0') {
+        if (char <= '9' and char >= '0') {
             ch = char - '0';
         }
         const v = wordToInt(data, i, char);
@@ -122,8 +122,7 @@ fn day1p2() !i64 {
     var acc: i64 = 0;
     var idx: i64 = 0;
 
-    while (lines.next()) |line| {
-        defer idx += 1;
+    while (lines.next()) |line| : (idx += 1) {
         if (line.len == 0) {
             continue;
         }
