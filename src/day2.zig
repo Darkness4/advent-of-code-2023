@@ -19,7 +19,7 @@ fn day2() !i64 {
         const max_red = 12;
         const max_green = 13;
         const max_blue = 14;
-        const game = line[gamedel + 2 .. line.len];
+        const game = line[gamedel + 2 ..];
         var roundit = std.mem.splitSequence(u8, game, "; ");
         while (roundit.next()) |round| {
             var handit = std.mem.splitSequence(u8, round, ", ");
@@ -65,13 +65,15 @@ fn day2p2() !i64 {
         var req_red: i64 = 0;
         var req_green: i64 = 0;
         var req_blue: i64 = 0;
-        const game = line[gamedel + 2 .. line.len];
-        var roundit = std.mem.splitSequence(u8, game, "; ");
-        while (roundit.next()) |round| {
-            var handit = std.mem.splitSequence(u8, round, ", ");
-
-            // Parse "x green, y blue, z red"
-            while (handit.next()) |hand| {
+        const game = line[gamedel + 2 ..];
+        var begin: usize = 0;
+        for (0.., game) |i, char| {
+            if (char == ',' or char == ';' or i == game.len - 1) { // Split either ',' or ';' or EOL.
+                var offset: usize = 0;
+                if (i == game.len - 1) {
+                    offset = 1;
+                }
+                const hand = game[begin .. i + offset];
                 const handdel = std.mem.indexOf(u8, hand, " ").?;
                 const n = try std.fmt.parseInt(i64, hand[0..handdel], 10);
                 switch (hand[handdel + 1]) {
@@ -86,6 +88,7 @@ fn day2p2() !i64 {
                     },
                     else => unreachable,
                 }
+                begin = i + 1 + 1; // +1 to skip space
             }
         }
         // Finished parsing, add required.
