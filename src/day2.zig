@@ -102,8 +102,8 @@ pub fn main() !void {
     var timer = try std.time.Timer.start();
     var result = try day2();
     const p1_time = timer.lap();
-    std.debug.print("{} in {}ns\n", .{ result, p1_time });
+    std.debug.print("day2 p1: {} in {}ns\n", .{ result, p1_time });
     result = try day2p2();
     const p2_time = timer.read();
-    std.debug.print("{} in {}ns\n", .{ result, p2_time });
+    std.debug.print("day2 p2: {} in {}ns\n", .{ result, p2_time });
 }

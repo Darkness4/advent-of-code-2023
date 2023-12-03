@@ -257,8 +257,8 @@ pub fn main() !void {
     var timer = try std.time.Timer.start();
     var result = try day3();
     const p1_time = timer.lap();
-    std.debug.print("{} in {}ns\n", .{ result, p1_time });
+    std.debug.print("day3 p1: {} in {}ns\n", .{ result, p1_time });
     result = try day3p2();
     const p2_time = timer.read();
-    std.debug.print("{} in {}ns\n", .{ result, p2_time });
+    std.debug.print("day3 p2: {} in {}ns\n", .{ result, p2_time });
 }
