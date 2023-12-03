@@ -21,16 +21,24 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    const day1_run = b.step("day1", "Run day1");
+    day1_run.dependOn(&(b.addRunArtifact(day1)).step);
+
     const day2 = b.addExecutable(.{
         .name = "day2",
         .root_source_file = .{ .path = "src/day2.zig" },
         .target = target,
         .optimize = optimize,
     });
-
-    const day1_run = b.step("day1", "Run day1");
-    day1_run.dependOn(&(b.addRunArtifact(day1)).step);
-
     const day2_run = b.step("day2", "Run day2");
     day2_run.dependOn(&(b.addRunArtifact(day2)).step);
+
+    const day3 = b.addExecutable(.{
+        .name = "day3",
+        .root_source_file = .{ .path = "src/day3.zig" },
+        .target = target,
+        .optimize = optimize,
+    });
+    const day3_run = b.step("day3", "Run day3");
+    day3_run.dependOn(&(b.addRunArtifact(day3)).step);
 }
