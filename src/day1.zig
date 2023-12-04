@@ -1,6 +1,8 @@
 const std = @import("std");
 
 var input = @embedFile("day1.txt");
+var input_test1 = @embedFile("day1p1_test.txt");
+var input_test2 = @embedFile("day1p2_test.txt");
 
 fn findFirstDigit(data: []const u8) u8 {
     for (data) |char| {
@@ -21,8 +23,8 @@ fn findLastDigit(data: []const u8) u8 {
     return ch;
 }
 
-fn day1() !i64 {
-    var lines = std.mem.splitSequence(u8, input, "\n");
+fn day1(data: []const u8) !i64 {
+    var lines = std.mem.splitSequence(u8, data, "\n");
 
     var acc: i64 = 0;
 
@@ -114,8 +116,8 @@ fn findLastWordDigit(data: []const u8) u8 {
     return ch;
 }
 
-fn day1p2() !i64 {
-    var lines = std.mem.splitSequence(u8, input, "\n");
+fn day1p2(data: []const u8) !i64 {
+    var lines = std.mem.splitSequence(u8, data, "\n");
 
     var acc: i64 = 0;
     var idx: i64 = 0;
@@ -132,10 +134,20 @@ fn day1p2() !i64 {
 
 pub fn main() !void {
     var timer = try std.time.Timer.start();
-    var result = try day1();
+    var result = try day1(input);
     const p1_time = timer.lap();
     std.debug.print("day1 p1: {} in {}ns\n", .{ result, p1_time });
-    result = try day1p2();
+    result = try day1p2(input);
     const p2_time = timer.read();
     std.debug.print("day1 p2: {} in {}ns\n", .{ result, p2_time });
+}
+
+test "day1" {
+    const result = try day1(input_test1);
+    try std.testing.expect(result == 142);
+}
+
+test "day1p2" {
+    const result = try day1p2(input_test2);
+    try std.testing.expect(result == 281);
 }

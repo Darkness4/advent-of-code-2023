@@ -22,6 +22,8 @@ pub fn build(b: *std.Build) !void {
         "day4",
     };
 
+    const test_run = b.step("test", "Run unit tests");
+
     const all_run = b.step("all", "Run all");
 
     var buf: [24]u8 = undefined;
@@ -36,5 +38,13 @@ pub fn build(b: *std.Build) !void {
         b.installArtifact(day_exe);
         day_run.dependOn(&(b.addRunArtifact(day_exe)).step);
         all_run.dependOn(&(b.addRunArtifact(day_exe)).step);
+
+        const day_test = b.addTest(.{
+            .name = day,
+            .root_source_file = .{ .path = try std.fmt.bufPrint(&buf, "src/{s}.zig", .{day}) },
+            .target = target,
+            .optimize = optimize,
+        });
+        test_run.dependOn(&(b.addRunArtifact(day_test)).step);
     }
 }

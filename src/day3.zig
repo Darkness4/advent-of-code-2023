@@ -4,6 +4,7 @@ var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
 
 var input = @embedFile("day3.txt");
+var input_test = @embedFile("day3_test.txt");
 
 fn isSymbol(ch: u8) bool {
     return switch (ch) {
@@ -14,8 +15,8 @@ fn isSymbol(ch: u8) bool {
     };
 }
 
-fn day3() !i64 {
-    var it = std.mem.splitSequence(u8, input, "\n");
+fn day3(data: []const u8) !i64 {
+    var it = std.mem.splitSequence(u8, data, "\n");
     var list = std.ArrayList([]const u8).init(allocator);
     defer list.deinit();
 
@@ -110,8 +111,8 @@ fn day3() !i64 {
 
 const SymbolRef = struct { acc: i64, count: i64 };
 
-fn day3p2() !i64 {
-    var it = std.mem.splitSequence(u8, input, "\n");
+fn day3p2(data: []const u8) !i64 {
+    var it = std.mem.splitSequence(u8, data, "\n");
     var list = std.ArrayList([]const u8).init(allocator);
     defer list.deinit();
 
@@ -255,10 +256,20 @@ fn day3p2() !i64 {
 
 pub fn main() !void {
     var timer = try std.time.Timer.start();
-    var result = try day3();
+    var result = try day3(input);
     const p1_time = timer.lap();
     std.debug.print("day3 p1: {} in {}ns\n", .{ result, p1_time });
-    result = try day3p2();
+    result = try day3p2(input);
     const p2_time = timer.read();
     std.debug.print("day3 p2: {} in {}ns\n", .{ result, p2_time });
+}
+
+test "day3" {
+    const result = try day3(input_test);
+    try std.testing.expect(result == 4361);
+}
+
+test "day3p2" {
+    const result = try day3p2(input_test);
+    try std.testing.expect(result == 467835);
 }

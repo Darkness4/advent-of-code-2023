@@ -1,12 +1,10 @@
 const std = @import("std");
 
-var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-const allocator = gpa.allocator();
-
 var input = @embedFile("day4.txt");
+var input_test = @embedFile("day4_test.txt");
 
-fn day4() !i64 {
-    var lines = std.mem.splitSequence(u8, input, "\n");
+fn day4(data: []const u8) !i64 {
+    var lines = std.mem.splitSequence(u8, data, "\n");
 
     var acc: i64 = 0;
 
@@ -55,8 +53,8 @@ fn day4() !i64 {
     return acc;
 }
 
-fn day4p2() !i64 {
-    var lines = std.mem.splitSequence(u8, input, "\n");
+fn day4p2(data: []const u8) !i64 {
+    var lines = std.mem.splitSequence(u8, data, "\n");
 
     var acc: i64 = 0;
     var gameid: usize = 1;
@@ -115,10 +113,20 @@ fn day4p2() !i64 {
 
 pub fn main() !void {
     var timer = try std.time.Timer.start();
-    var result = try day4();
+    var result = try day4(input);
     const p1_time = timer.lap();
     std.debug.print("day4 p1: {} in {}ns\n", .{ result, p1_time });
-    result = try day4p2();
+    result = try day4p2(input);
     const p2_time = timer.read();
     std.debug.print("day4 p2: {} in {}ns\n", .{ result, p2_time });
+}
+
+test "day4" {
+    const result = try day4(input_test);
+    try std.testing.expect(result == 13);
+}
+
+test "day4p2" {
+    const result = try day4p2(input_test);
+    try std.testing.expect(result == 30);
 }
