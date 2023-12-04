@@ -15,7 +15,12 @@ pub fn build(b: *std.Build) !void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
-    const days = [_][]const u8{ "day1", "day2", "day3" };
+    const days = [_][]const u8{
+        "day1",
+        "day2",
+        "day3",
+        "day4",
+    };
 
     const all_run = b.step("all", "Run all");
 

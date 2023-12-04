@@ -6,20 +6,20 @@ fn day2() !i64 {
     var lines = std.mem.splitSequence(u8, input, "\n");
 
     var acc: i64 = 0;
+    var gameid: i64 = 1;
 
-    outer: while (lines.next()) |line| {
+    outer: while (lines.next()) |line| : (gameid += 1) {
         if (line.len == 0) {
             continue;
         }
         // Parse Game ID
         const gamedel = std.mem.indexOf(u8, line, ":").?;
-        const id = try std.fmt.parseInt(i64, line[5..gamedel], 10);
+        const game = line[gamedel + 2 ..];
 
         // Parse the Game
         const max_red = 12;
         const max_green = 13;
         const max_blue = 14;
-        const game = line[gamedel + 2 ..];
         var roundit = std.mem.splitSequence(u8, game, "; ");
         while (roundit.next()) |round| {
             var handit = std.mem.splitSequence(u8, round, ", ");
@@ -44,7 +44,7 @@ fn day2() !i64 {
             }
         }
         // Finished parsing, game is valid
-        acc += id;
+        acc += gameid;
     }
 
     return acc;
