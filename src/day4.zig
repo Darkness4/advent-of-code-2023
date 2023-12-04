@@ -59,10 +59,11 @@ fn day4p2(data: []const u8) !i64 {
     var acc: i64 = 0;
     var gameid: usize = 1;
 
-    // Combos is a queue used to count the number of copies.
-    // If card 1 has 4 matching, combos[2,3,4,5] += 1 for the 4 next cards. Score = 1 (combos[1])
-    // If card 2 has 2 matching, combos[3,4] += 1 for the next 2 cards. Score = 3 (score + combos[2])
+    // Copies is an array used to count the number of copies.
+    // If card 1 has 4 matching, copies[2,3,4,5] += 1 for the 4 next cards. Score = 1 (copies[1])
+    // If card 2 has 2 matching, copies[3,4] += 1 for the next 2 cards. Score = 3 (score + copies[2])
     // Etc...
+    // We allow to do this because we know there is an ending and it's not worth it to dynamically allocate.
     var copies = [_]i64{1} ** 300; // We use 300, a hard-coded value for our buffer. No need for dynamc allocation.
 
     while (lines.next()) |line| : (gameid += 1) {
