@@ -17,7 +17,7 @@ fn isSymbol(ch: u8) bool {
 
 fn day3(data: []const u8) !i64 {
     var it = std.mem.splitSequence(u8, data, "\n");
-    var list = std.ArrayList([]const u8).init(allocator);
+    var list = try std.ArrayList([]const u8).initCapacity(allocator, 150);
     defer list.deinit();
 
     var acc: i64 = 0;
@@ -113,7 +113,7 @@ const SymbolRef = struct { acc: i64, count: i64 };
 
 fn day3p2(data: []const u8) !i64 {
     var it = std.mem.splitSequence(u8, data, "\n");
-    var list = std.ArrayList([]const u8).init(allocator);
+    var list = try std.ArrayList([]const u8).initCapacity(allocator, 150);
     defer list.deinit();
 
     var acc: i64 = 0;
