@@ -85,12 +85,11 @@ fn day5p2(data: []const u8) !usize {
     // var round: i64 = 0;
     var new_list = try std.ArrayList(Range).initCapacity(allocator, 1000);
     defer new_list.deinit();
+    // Ignore empty line and header
+    _ = lines.next();
+    _ = lines.next();
     while (lines.next()) |line| {
-        if (line.len == 0) { // New section
-            continue;
-        }
-        if (line[0] < '0' or line[0] > '9') { // New section
-            // round += 1;
+        if (line.len == 0 or line[0] < '0' or line[0] > '9') { // New section
             // Pass mapped items to list. Left overs are still present inside list.
             try list.appendSlice(new_list.items);
             new_list.clearRetainingCapacity();
@@ -159,7 +158,6 @@ fn day5p2(data: []const u8) !usize {
         }
     }
 
-    try list.appendSlice(new_list.items);
     var min: usize = std.math.maxInt(usize);
     for (list.items) |*range| {
         min = @min(min, range.*.start);
