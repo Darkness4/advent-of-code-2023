@@ -134,12 +134,12 @@ fn day1p2(data: []const u8) !i64 {
 
 pub fn main() !void {
     var timer = try std.time.Timer.start();
-    var result = try day1(input);
+    const result_p1 = try day1(input);
     const p1_time = timer.lap();
-    std.debug.print("day1 p1: {} in {}ns\n", .{ result, p1_time });
-    result = try day1p2(input);
+    const result_p2 = try day1p2(input);
     const p2_time = timer.read();
-    std.debug.print("day1 p2: {} in {}ns\n", .{ result, p2_time });
+    std.debug.print("day5 p1: {} in {}ns\n", .{ result_p1, p1_time });
+    std.debug.print("day5 p2: {} in {}ns\n", .{ result_p2, p2_time });
 }
 
 test "day1" {

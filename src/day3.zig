@@ -30,10 +30,7 @@ fn day3(data: []const u8) !i64 {
         try list.append(line);
     }
 
-    var line_index: usize = 0;
-    while (line_index < list.items.len) : (line_index += 1) {
-        const line = list.items[line_index];
-
+    for (0.., list.items) |line_index, line| {
         // Number builder
         var num: i64 = 0;
         var num_begin_index: usize = 0;
@@ -133,10 +130,7 @@ fn day3p2(data: []const u8) !i64 {
     ).init(allocator);
     defer symbols.deinit();
 
-    var line_index: usize = 0;
-    while (line_index < list.items.len) : (line_index += 1) {
-        const line = list.items[line_index];
-
+    for (0.., list.items) |line_index, line| {
         // Number builder
         var num: i64 = 0;
         var num_begin_index: usize = 0;
@@ -256,14 +250,13 @@ fn day3p2(data: []const u8) !i64 {
 
 pub fn main() !void {
     var timer = try std.time.Timer.start();
-    var result = try day3(input);
+    const result_p1 = try day3(input);
     const p1_time = timer.lap();
-    std.debug.print("day3 p1: {} in {}ns\n", .{ result, p1_time });
-    result = try day3p2(input);
+    const result_p2 = try day3p2(input);
     const p2_time = timer.read();
-    std.debug.print("day3 p2: {} in {}ns\n", .{ result, p2_time });
+    std.debug.print("day3 p1: {} in {}ns\n", .{ result_p1, p1_time });
+    std.debug.print("day3 p2: {} in {}ns\n", .{ result_p2, p2_time });
 }
-
 test "day3" {
     const result = try day3(input_test);
     try std.testing.expect(result == 4361);

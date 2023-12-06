@@ -1,0 +1,14 @@
+seeds: 79-93 55-68
+
+seed-to-soil map:
+50-52 98-100
+52-100 50-98: 79-93 -> 81-95, 55-68 -> 57-70
+
+soil-to-fertilizer map: (round 2 has no effect)
+0-27 15-42
+37-39 52-54
+39-54 0-15
+
+fertilizer-to-water map: (81-95 is not affected)
+49-57 53-61 (57-70 overflow) [57-61 -> 53-57 (len: 4)][62-70 (len: 8)]
+...

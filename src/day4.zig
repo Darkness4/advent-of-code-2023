@@ -71,7 +71,7 @@ fn day4p2(data: []const u8) !i64 {
             continue;
         }
 
-        var game_acc: i64 = 0;
+        var game_acc: usize = 0;
 
         // Indexing after parsing
         var bingo = [_]bool{false} ** 100;
@@ -101,9 +101,8 @@ fn day4p2(data: []const u8) !i64 {
             }
         }
 
-        var i: usize = 0;
-        while (i < game_acc) : (i += 1) {
-            copies[gameid + i + 1] += 1 * copies[gameid];
+        for (copies[gameid + 1 .. gameid + game_acc + 1]) |*copy| {
+            copy.* += copies[gameid];
         }
 
         acc += copies[gameid];
@@ -114,12 +113,12 @@ fn day4p2(data: []const u8) !i64 {
 
 pub fn main() !void {
     var timer = try std.time.Timer.start();
-    var result = try day4(input);
+    const result_p1 = try day4(input);
     const p1_time = timer.lap();
-    std.debug.print("day4 p1: {} in {}ns\n", .{ result, p1_time });
-    result = try day4p2(input);
+    const result_p2 = try day4p2(input);
     const p2_time = timer.read();
-    std.debug.print("day4 p2: {} in {}ns\n", .{ result, p2_time });
+    std.debug.print("day4 p1: {} in {}ns\n", .{ result_p1, p1_time });
+    std.debug.print("day4 p2: {} in {}ns\n", .{ result_p2, p2_time });
 }
 
 test "day4" {
