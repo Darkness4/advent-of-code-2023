@@ -104,7 +104,6 @@ pub fn main() !void {
 
 test "day6" {
     const result = try day6(input_test);
-    std.debug.print("{}\n", .{result});
     try std.testing.expect(result == 288);
 }
 
