@@ -88,10 +88,6 @@ fn lagrangeZigNative(data: [max_lines][max_data]i64, n_lines: usize, lagrange_ba
     return acc;
 }
 
-// day9 won't be zig native, let's use lagrange interpolation with simd libraries.
-// We've got a matrix, let's do it for funsies, especially since Zig is a low-level language.
-// TODO: OpenBLAS maybe.
-// TODO: Better parsing and don't cheat.
 fn day9(data: []const u8) !i64 {
     // Store matrices.
     var matrix = [_][max_data]i64{[_]i64{0} ** max_data} ** max_lines;
