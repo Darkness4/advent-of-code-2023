@@ -6,6 +6,10 @@ var input_test = @embedFile("day9_test.txt");
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
 
+// Optimized arrays via hard-coded length buffers. Adapted from the data.
+const max_lines = 200;
+const max_data = 21;
+
 /// For a set of n+1 points {(x_0, f(x_0)), ..., (x_n, f(x_n)}
 /// Lagrange interpolating polynomial is defined as:
 ///
@@ -47,17 +51,16 @@ const allocator = gpa.allocator();
 ///               = - (n+1)!/[j!(n-j+1)!] * (-1)^(n-j) * (n-j+1)/(j+1)
 ///               = - l_j(n+1) * (n-j+1)/(j+1)
 ///    l_j+1(n+1) = - l_j-1(n+1) * (n-j+2)/j
-fn computeLagrangeBasis(data: []i64) ![]i64 {
-    const n = data.len - 1;
+fn computeLagrangeBasis(n: usize) ![]i64 {
     const n_i64 = @as(i64, @intCast(n));
 
     // l_0(n+1) = binom(n+1, 0) * (-1)^n
     //          = (-1)^n
     // Negative when n is impair.
-    var l = try std.ArrayList(i64).initCapacity(allocator, data.len);
+    var l = try std.ArrayList(i64).initCapacity(allocator, n + 1);
     var last: i64 = if (n % 2 == 0) 1 else -1;
     l.appendAssumeCapacity(last);
-    for (1..data.len) |j| {
+    for (1..n + 1) |j| {
         const j_i64 = @as(i64, @intCast(j));
         last = -@divExact(last * (n_i64 - j_i64 + 2), j_i64);
         l.appendAssumeCapacity(last);
@@ -65,19 +68,19 @@ fn computeLagrangeBasis(data: []i64) ![]i64 {
     return l.toOwnedSlice();
 }
 
-fn lagrangeZigNative(data: [][]i64, lagrange_basis: []i64, reverse: bool) i64 {
+fn lagrangeZigNative(data: [max_lines][max_data]i64, n_lines: usize, lagrange_basis: []i64, n: usize, reverse: bool) i64 {
     var acc: i64 = 0;
 
     if (!reverse) {
-        for (0.., lagrange_basis) |i, l| {
-            for (data) |line| {
-                acc += line[i] * l;
+        for (0..n + 1) |j| {
+            for (0..n_lines) |i| {
+                acc += data[i][j] * lagrange_basis[j];
             }
         }
     } else {
-        for (0.., lagrange_basis) |i, l| {
-            for (data) |line| {
-                acc += line[line.len - i - 1] * l;
+        for (0..n + 1) |j| {
+            for (0..n_lines) |i| {
+                acc += data[i][n - j] * lagrange_basis[j];
             }
         }
     }
@@ -90,48 +93,85 @@ fn lagrangeZigNative(data: [][]i64, lagrange_basis: []i64, reverse: bool) i64 {
 // TODO: OpenBLAS maybe.
 // TODO: Better parsing and don't cheat.
 fn day9(data: []const u8) !i64 {
-    var lines = std.mem.splitSequence(u8, data, "\n");
-
     // Store matrices.
-    var matrix_list = try std.ArrayList([]i64).initCapacity(allocator, 300);
-    while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-        var line_parser = try std.ArrayList(i64).initCapacity(allocator, 300);
-        var vals = std.mem.splitSequence(u8, line, " ");
-        while (vals.next()) |v| {
-            line_parser.appendAssumeCapacity(try std.fmt.parseInt(i64, v, 10));
-        }
-        matrix_list.appendAssumeCapacity(try line_parser.toOwnedSlice());
-    }
-    const matrix = try matrix_list.toOwnedSlice();
+    var matrix = [_][max_data]i64{[_]i64{0} ** max_data} ** max_lines;
+    var x: usize = 0;
+    var y: usize = 0;
+    var n: usize = 0;
 
-    const l = try computeLagrangeBasis(matrix[0]);
-    const res = lagrangeZigNative(matrix, l, false);
+    var number_builder: i64 = 0;
+    var negative: bool = false;
+    for (data) |c| {
+        switch (c) {
+            '0'...'9' => number_builder = number_builder * 10 + c - '0',
+            '-' => negative = true,
+            ' ' => {
+                if (negative) number_builder = -number_builder;
+                matrix[x][y] = number_builder;
+                negative = false;
+                number_builder = 0;
+                y += 1;
+            },
+            '\n' => {
+                if (y == 0) {
+                    continue;
+                }
+                if (negative) number_builder = -number_builder;
+                matrix[x][y] = number_builder;
+                negative = false;
+                number_builder = 0;
+                n = y;
+                y = 0;
+                x += 1;
+            },
+            else => unreachable, // UB
+        }
+    }
+
+    const l = try computeLagrangeBasis(n); // y = n = length of data
+    const res = lagrangeZigNative(matrix, x, l, n, false);
+    // std.debug.print("l={any} res={} x={}\n", .{ l, res, x });
     return res;
 }
 
 fn day9p2(data: []const u8) !i64 {
-    var lines = std.mem.splitSequence(u8, data, "\n");
-
     // Store matrices.
-    var matrix_list = try std.ArrayList([]i64).initCapacity(allocator, 300);
-    while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-        var line_parser = try std.ArrayList(i64).initCapacity(allocator, 300);
-        var vals = std.mem.splitSequence(u8, line, " ");
-        while (vals.next()) |v| {
-            line_parser.appendAssumeCapacity(try std.fmt.parseInt(i64, v, 10));
-        }
-        matrix_list.appendAssumeCapacity(try line_parser.toOwnedSlice());
-    }
-    const matrix = try matrix_list.toOwnedSlice();
+    var matrix = [_][max_data]i64{[_]i64{0} ** max_data} ** max_lines;
+    var x: usize = 0;
+    var y: usize = 0;
+    var n: usize = 0;
 
-    const l = try computeLagrangeBasis(matrix[0]);
-    const res = lagrangeZigNative(matrix, l, true);
+    var number_builder: i64 = 0;
+    var negative: bool = false;
+    for (data) |c| {
+        switch (c) {
+            '0'...'9' => number_builder = number_builder * 10 + c - '0',
+            '-' => negative = true,
+            ' ' => {
+                if (negative) number_builder = -number_builder;
+                matrix[x][y] = number_builder;
+                negative = false;
+                number_builder = 0;
+                y += 1;
+            },
+            '\n' => {
+                if (y == 0) {
+                    continue;
+                }
+                if (negative) number_builder = -number_builder;
+                matrix[x][y] = number_builder;
+                negative = false;
+                number_builder = 0;
+                n = y;
+                y = 0;
+                x += 1;
+            },
+            else => {},
+        }
+    }
+
+    const l = try computeLagrangeBasis(n); // y = n = length of data
+    const res = lagrangeZigNative(matrix, x, l, n, true);
     return res;
 }
 
