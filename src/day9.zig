@@ -89,20 +89,8 @@ fn lagrangeZigNative(data: [][]i64, lagrange_basis: []i64, reverse: bool) i64 {
 // We've got a matrix, let's do it for funsies, especially since Zig is a low-level language.
 // TODO: OpenBLAS maybe.
 // TODO: Better parsing and don't cheat.
-fn day9(data: [][]i64) !i64 {
-    const l = try computeLagrangeBasis(data[0]);
-    const res = lagrangeZigNative(data, l, false);
-    return res;
-}
-
-fn day9p2(data: [][]i64) !i64 {
-    const l = try computeLagrangeBasis(data[0]);
-    const res = lagrangeZigNative(data, l, true);
-    return res;
-}
-
-pub fn main() !void {
-    var lines = std.mem.splitSequence(u8, input, "\n");
+fn day9(data: []const u8) !i64 {
+    var lines = std.mem.splitSequence(u8, data, "\n");
 
     // Store matrices.
     var matrix_list = try std.ArrayList([]i64).initCapacity(allocator, 300);
@@ -119,56 +107,51 @@ pub fn main() !void {
     }
     const matrix = try matrix_list.toOwnedSlice();
 
+    const l = try computeLagrangeBasis(matrix[0]);
+    const res = lagrangeZigNative(matrix, l, false);
+    return res;
+}
+
+fn day9p2(data: []const u8) !i64 {
+    var lines = std.mem.splitSequence(u8, data, "\n");
+
+    // Store matrices.
+    var matrix_list = try std.ArrayList([]i64).initCapacity(allocator, 300);
+    while (lines.next()) |line| {
+        if (line.len == 0) {
+            continue;
+        }
+        var line_parser = try std.ArrayList(i64).initCapacity(allocator, 300);
+        var vals = std.mem.splitSequence(u8, line, " ");
+        while (vals.next()) |v| {
+            line_parser.appendAssumeCapacity(try std.fmt.parseInt(i64, v, 10));
+        }
+        matrix_list.appendAssumeCapacity(try line_parser.toOwnedSlice());
+    }
+    const matrix = try matrix_list.toOwnedSlice();
+
+    const l = try computeLagrangeBasis(matrix[0]);
+    const res = lagrangeZigNative(matrix, l, true);
+    return res;
+}
+
+pub fn main() !void {
     var timer = try std.time.Timer.start();
-    const result_p1 = try day9(matrix);
+    const result_p1 = try day9(input);
     const p1_time = timer.lap();
 
-    const result_p2 = try day9p2(matrix);
+    const result_p2 = try day9p2(input);
     const p2_time = timer.read();
     std.debug.print("day9 p1: {} in {}ns\n", .{ result_p1, p1_time });
     std.debug.print("day9 p2: {} in {}ns\n", .{ result_p2, p2_time });
 }
 
 test "day9" {
-    var lines = std.mem.splitSequence(u8, input_test, "\n");
-
-    // Store matrices.
-    var matrix_list = try std.ArrayList([]i64).initCapacity(allocator, 300);
-    while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-        var line_parser = try std.ArrayList(i64).initCapacity(allocator, 300);
-        var vals = std.mem.splitSequence(u8, line, " ");
-        while (vals.next()) |v| {
-            line_parser.appendAssumeCapacity(try std.fmt.parseInt(i64, v, 10));
-        }
-        matrix_list.appendAssumeCapacity(try line_parser.toOwnedSlice());
-    }
-    const matrix = try matrix_list.toOwnedSlice();
-
-    const result = try day9(matrix);
+    const result = try day9(input_test);
     try std.testing.expect(result == 114);
 }
 
 test "day9p2" {
-    var lines = std.mem.splitSequence(u8, input_test, "\n");
-
-    // Store matrices.
-    var matrix_list = try std.ArrayList([]i64).initCapacity(allocator, 300);
-    while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-        var line_parser = try std.ArrayList(i64).initCapacity(allocator, 300);
-        var vals = std.mem.splitSequence(u8, line, " ");
-        while (vals.next()) |v| {
-            line_parser.appendAssumeCapacity(try std.fmt.parseInt(i64, v, 10));
-        }
-        matrix_list.appendAssumeCapacity(try line_parser.toOwnedSlice());
-    }
-    const matrix = try matrix_list.toOwnedSlice();
-
-    const result = try day9p2(matrix);
+    const result = try day9p2(input_test);
     try std.testing.expect(result == 2);
 }
