@@ -16,6 +16,7 @@ pub fn build(b: *std.Build) !void {
         "day7",
         "day8",
         "day9",
+        "day10",
     };
 
     const test_run = b.step("test", "Run unit tests");
@@ -25,7 +26,7 @@ pub fn build(b: *std.Build) !void {
     for (days) |day| {
         const day_exe = b.addExecutable(.{
             .name = day,
-            .root_source_file = .{ .path = try std.fmt.bufPrint(&buf, "src/{s}.zig", .{day}) },
+            .root_source_file = .{ .src_path = .{ .owner = b, .sub_path = try std.fmt.bufPrint(&buf, "src/{s}.zig", .{day}) } },
             .target = target,
             .optimize = optimize,
         });
@@ -36,7 +37,7 @@ pub fn build(b: *std.Build) !void {
 
         const day_test = b.addTest(.{
             .name = day,
-            .root_source_file = .{ .path = try std.fmt.bufPrint(&buf, "src/{s}.zig", .{day}) },
+            .root_source_file = .{ .src_path = .{ .owner = b, .sub_path = try std.fmt.bufPrint(&buf, "src/{s}.zig", .{day}) } },
             .target = target,
             .optimize = optimize,
         });

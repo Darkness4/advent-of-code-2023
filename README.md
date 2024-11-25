@@ -9,4 +9,4 @@ zig build <dayX>
 
 ## Compatibility
 
-Tested on `0.12.0-dev.1769+bf5ab5451`.
+Tested on `0.14.0-dev.1632+d83a3f174`.
